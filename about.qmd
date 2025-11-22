@@ -1,6 +1,6 @@
 ---
 title: "About"
-image: profile.jpg
+image: profile.jp
 about:
   template: jolla
   links:
@@ -16,4 +16,4 @@ about:
 
 ---
 
-About this blog
+Este é um blog sobre programação em Python, com posts sobre projetos, regressão linear, monitoramento de frota, etc.
