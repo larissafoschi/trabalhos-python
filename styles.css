@@ -1,1 +1,10 @@
-/* css styles */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  margin-right: auto; /* empurra os links para a direita */
+}
+
+.navbar-left img {
+  height: 40px;  /* ajuste a altura da logo */
+  margin-right: 10px;
+}

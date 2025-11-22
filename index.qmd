@@ -1,4 +1,5 @@
 ---
+![](profile.jpg){width=120px}
 title: "Programação-Python"
 listing:
   contents: posts
