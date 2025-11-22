@@ -1,0 +1,222 @@
+---
+title: "Monitoramento de Frota de Ônibus"
+format: html
+date: 2025-11-21
+author: "Larissa Foschi"
+image: onibus.png
+---
+
+# Introdução
+
+Nesta atividade foi desenvolvida uma rotina em Python para monitorar em tempo real a posição dos ônibus de uma linha específica utilizando a API pública da SPTrans (Olho Vivo).
+
+O objetivo foi:
+
+- autenticar na API utilizando um token pessoal
+- buscar as paradas de uma linha escolhida
+- obter a posição atual dos veículos em circulação
+- exibir tudo em um mapa interativo, destacando:
+  - paradas (em azul)
+  - ônibus em movimento (em vermelho)
+
+---
+
+# Bibliotecas utilizadas
+
+- `requests`: para fazer as chamadas HTTP na API da SPTrans
+- `dotenv`: para ler o token armazenado no arquivo `.env`
+- `folium`: responsável pela construção do mapa interativo
+- `os`: manipulação de variáveis do sistema
+
+---
+
+# Autenticação na API
+
+Antes de consultar qualquer informação, o código realiza o login na API usando o token fornecido no `.env`:
+
+```
+import os
+import requests
+from dotenv import load_dotenv
+
+
+load_dotenv(".env")
+
+s = requests.Session()
+res = s.post(
+    f"http://api.olhovivo.sptrans.com.br/v2.1/Login/Autenticar?token={os.getenv('SPTRANS_TOKEN')}"
+)
+print(res.text)
+Se a autenticação estiver correta, a resposta será "true".
+```
+
+- *Consulta da linha*
+
+Com a sessão autenticada, é feita a busca de linhas que contenham o termo “Lapa”:
+
+```
+linhas_lapa = s.get(
+    "http://api.olhovivo.sptrans.com.br/v2.1/Linha/Buscar?termosBusca=Lapa"
+)
+
+linhas_lapa = linhas_lapa.json()
+print(linhas_lapa[:3])
+```
+
+*Após isso, escolheu-se uma linha específica pelo código:
+*
+
+```
+res = s.get(
+    "http://api.olhovivo.sptrans.com.br/v2.1/Parada/BuscarParadasPorLinha?codigoLinha=35274"
+)
+
+paradas = res.json()
+print(paradas)
+```
+
+- *Obtendo posição dos ônibus em tempo real*
+
+O próximo passo foi obter os veículos que estão circulando naquele momento:
+
+```
+pos_res = s.get(
+    f"http://api.olhovivo.sptrans.com.br/v2.1/Posicao/Linha?codigoLinha=35274"
+)
+pos = pos_res.json()
+
+if isinstance(pos, dict) and pos.get("vs"):
+    print(f"Foram encontrados {len(pos['vs'])} ônibus circulando.")
+else:
+    print("Nenhum ônibus em movimento no momento.")
+```
+
+- *Construção do mapa*
+
+A API retorna as coordenadas (latitude e longitude) tanto das paradas quanto dos veículos.
+Usando o folium, um mapa foi gerado contendo:
+
+marcadores azuis → paradas
+
+marcadores vermelhos → ônibus em trânsito
+
+```
+from folium import Map, Marker, Icon
+from paradas import paradas
+from posicoes import pos
+
+m = Map(location=[paradas[0]["py"], paradas[0]["px"]], zoom_start=13)
+
+for p in paradas:
+    Marker(
+        location=[p["py"], p["px"]],
+        popup=f"Parada: {p['np']}",
+        icon=Icon(color="blue", icon="bus", prefix="fa")
+    ).add_to(m)
+
+if "vs" in pos and pos["vs"]:
+    for v in pos["vs"]:
+        Marker(
+            location=[v["py"], v["px"]],
+            popup=f"Ônibus {v['p']} - sentido {v['a']}",
+            icon=Icon(color="red", icon="info-sign")
+        ).add_to(m)
+
+m.show_in_browser()
+```
+
+**O resultado é um mapa interativo exibido no navegador, permitindo visualizar a estrutura da linha e onde os veículos estão em tempo real.**
+
+---
+
+# CÓDIGO COMPLETO
+
+- **Mapas:**
+
+```
+from folium import Map, Marker, Icon
+from paradas import paradas
+from posicoes import pos
+
+m = Map(location=[paradas[0]["py"], paradas[0]["px"]], zoom_start=13)
+
+for p in paradas:
+    Marker(
+        location=[p["py"], p["px"]],
+        popup=f"Parada: {p['np']}",
+        icon=Icon(color="blue", icon="bus", prefix="fa")
+    ).add_to(m)
+
+if "vs" in pos and pos["vs"]:
+    for v in pos["vs"]:
+        Marker(
+            location=[v["py"], v["px"]],
+            popup=f"Ônibus {v['p']} - sentido {v['a']}",
+            icon=Icon(color="red", icon="info-sign")
+        ).add_to(m)
+
+m.show_in_browser()
+```
+
+- **Paradas:**
+
+```
+import os
+import requests
+from dotenv import load_dotenv
+
+load_dotenv(".env")
+
+s = requests.Session()
+res = s.post(
+f"http://api.olhovivo.sptrans.com.br/v2.1/Login/Autenticar?token={os.getenv('SPTRANS_TOKEN')}"
+)
+
+print(res.text)
+
+linhas_lapa = s.get(
+"http://api.olhovivo.sptrans.com.br/v2.1/Linha/Buscar?termosBusca=Lapa"
+)
+
+linhas_lapa = linhas_lapa.json()
+print(linhas_lapa[:3])
+
+res = s.get(
+"http://api.olhovivo.sptrans.com.br/v2.1/Parada/BuscarParadasPorLinha?codigoLinha=35274"
+)
+
+paradas = res.json()
+print(paradas)
+```
+
+- **Posições dos ônibus:**
+
+```
+import os
+import requests
+from dotenv import load_dotenv
+
+load_dotenv(".env")
+
+TOKEN = os.getenv("SPTRANS_TOKEN")
+CODIGO_LINHA = os.getenv("SPTRANS_CODIGO_LINHA", "35274")
+
+if not TOKEN:
+    raise RuntimeError("SPTRANS_TOKEN não definido em .env")
+
+s = requests.Session()
+login_res = s.post(f"http://api.olhovivo.sptrans.com.br/v2.1/Login/Autenticar?token={TOKEN}")
+if not login_res.ok or login_res.text.strip().lower() != "true":
+    raise RuntimeError(f"Falha ao autenticar: {login_res.status_code} {login_res.text}")
+
+pos_res = s.get(f"http://api.olhovivo.sptrans.com.br/v2.1/Posicao/Linha?codigoLinha={CODIGO_LINHA}")
+pos_res.raise_for_status()
+
+pos = pos_res.json()
+
+if isinstance(pos, dict) and pos.get("vs"):
+    print(f"Foram encontrados {len(pos['vs'])} ônibus circulando.")
+else:
+    print("Nenhum ônibus em movimento no momento.")
+print(pos)
+```

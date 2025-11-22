@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Programação-Python</title>
+<link>https://your-website-url.example.com/</link>
+<atom:link href="https://your-website-url.example.com/index.xml" rel="self" type="application/rss+xml"/>
+<description>A blog built with Quarto</description>
+<generator>quarto-1.8.25</generator>
+<lastBuildDate>Thu, 01 Jan 2099 03:00:00 GMT</lastBuildDate>
+<item>
+  <title>Welcome to my first blog!</title>
+  <dc:creator>Larissa Foschi</dc:creator>
+  <link>https://your-website-url.example.com/posts/Welcome_files/welcome.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="olá-que-bom-te-ver-por-aqui" class="level1">
+<h1>Olá! Que bom te ver por aqui! :)</h1>
+<hr>
+<section id="o-que-você-vai-encontrar-por-aqui" class="level2">
+<h2 class="anchored" data-anchor-id="o-que-você-vai-encontrar-por-aqui">O que você vai encontrar por aqui</h2>
+<ul>
+<li><strong>Projetos de programação:</strong> códigos, scripts e visualizações.</li>
+<li><strong>Análises de dados:</strong> gráficos, mapas e insights interessantes.</li>
+</ul>
+</section>
+<section id="como-navegar" class="level2">
+<h2 class="anchored" data-anchor-id="como-navegar">Como navegar</h2>
+<p>Use o menu no topo para acessar diferentes seções, ou explore os posts mais recentes logo abaixo. Sinta-se à vontade para comentar e compartilhar suas ideias!</p>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <guid>https://your-website-url.example.com/posts/Welcome_files/welcome.html</guid>
+  <pubDate>Thu, 01 Jan 2099 03:00:00 GMT</pubDate>
+  <media:content url="https://your-website-url.example.com/posts/Welcome_files/welcome.jpg" medium="image" type="image/jpeg"/>
+</item>
+<item>
+  <title>Cotação do Dólar por Período</title>
+  <dc:creator>Larissa Foschi</dc:creator>
+  <link>https://your-website-url.example.com/posts/2025-11-22-cot_dolarr.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="introdução" class="level1">
+<h1>Introdução</h1>
+<p>Nesta atividade foi desenvolvida uma rotina em Python que recebe como entrada um mês e um ano no formato <strong>MMYYYY</strong> e consulta a API do Banco Central para obter a cotação diária do dólar frente ao real naquele período.</p>
+<p>O objetivo é:</p>
+<ul>
+<li>identificar o primeiro e o último dia do mês automaticamente</li>
+<li>consultar a API do Banco Central</li>
+<li>organizar os dados em formato de tabela</li>
+<li>preencher dias sem cotação (como fins de semana e feriados)</li>
+<li>exibir um gráfico de linha interativo utilizando a biblioteca Plotly</li>
+</ul>
+<hr>
+</section>
+<section id="bibliotecas-utilizadas" class="level1">
+<h1>Bibliotecas utilizadas</h1>
+<pre><code>import requests
+import pandas as pd
+import plotly.express as px
+import calendar
+from datetime import datetime, timedelta
+requests: realiza a consulta HTTP na API do Banco Central</code></pre>
+<p>pandas: organiza os dados em tabela</p>
+<p>plotly.express: cria o gráfico interativo</p>
+<p>calendar e datetime: manipulam datas</p>
+</section>
+<section id="lógica-da-função" class="level1">
+<h1>Lógica da função</h1>
+<ul>
+<li><em>Conversão da data</em></li>
+</ul>
+<p>A função recebe uma string no formato MMYYYY e converte para uma data do tipo datetime, representando o primeiro dia do mês:</p>
+<pre><code>primeira_data = datetime.strptime(mes_ano, "%m%Y")</code></pre>
+<ul>
+<li><em>Descobrindo o último dia do mês</em></li>
+</ul>
+<p>O Python calcula automaticamente quantos dias existem no mês informado:</p>
+<pre><code>ultimo_dia = calendar.monthrange(primeira_data.year, primeira_data.month)[1]
+ultima_data = primeira_data.replace(day=ultimo_dia)</code></pre>
+<ul>
+<li><em>Formatação para a API</em></li>
+</ul>
+<p>A API do Banco Central exige datas no padrão MM-DD-YYYY, portanto elas são formatadas:</p>
+<pre><code>data_inicial = primeira_data.strftime("%m-%d-%Y")
+data_final   = ultima_data.strftime("%m-%d-%Y")</code></pre>
+<ul>
+<li><em>Construção da URL</em></li>
+</ul>
+<p>A URL da consulta é montada com os parâmetros necessários:</p>
+<pre><code>url = (
+    f"https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/"
+    f"CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?"
+    f"@dataInicial='{data_inicial}'&amp;@dataFinalCotacao='{data_final}'"
+    f"&amp;$top=1000&amp;$format=json"
+    f"&amp;$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao"
+)</code></pre>
+<ul>
+<li><em>Consulta e tratamento dos dados</em></li>
+</ul>
+<p>Após a requisição, os dados são transformados em DataFrame:</p>
+<pre><code>df = pd.DataFrame(resposta["value"])</code></pre>
+<p>A coluna de data é transformada para remover o horário e facilitar a ordenação:</p>
+<pre><code>df["dataHoraCotacao"] = pd.to_datetime(df["dataHoraCotacao"]).dt.date
+df = df.sort_values("dataHoraCotacao")</code></pre>
+<ul>
+<li><em>Preenchendo dias sem cotação</em></li>
+</ul>
+<p>Alguns dias, como finais de semana e feriados, não possuem valores retornados pela API. Para manter a continuidade da linha do gráfico, é utilizado o valor do último dia útil anterior:</p>
+<pre><code>df_completo["cotacaoVenda"] = df_completo["cotacaoVenda"].fillna(method="ffill")</code></pre>
+<ul>
+<li><em>Geração do gráfico</em></li>
+</ul>
+<p>Por fim, o gráfico interativo é exibido com Plotly:</p>
+<pre><code>fig = px.line(
+    df_completo,
+    x="dataHoraCotacao",
+    y="cotacaoVenda",
+    title=f"Cotação do Dólar – {mes_ano[:2]}/{mes_ano[2:]}",
+    labels={
+        "dataHoraCotacao": "Data",
+        "cotacaoVenda": "Cotação de Venda (R$)"
+    },
+    markers=True
+)
+
+fig.show()</code></pre>
+<hr>
+</section>
+<section id="código-completo" class="level1">
+<h1>CÓDIGO COMPLETO</h1>
+<pre><code>import requests
+import pandas as pd
+import plotly.express as px
+import calendar
+from datetime import datetime, timedelta
+
+def grafico_cotacao_dolar(mes_ano: str):
+
+    primeira_data = datetime.strptime(mes_ano, "%m%Y")
+
+    ultimo_dia = calendar.monthrange(primeira_data.year, primeira_data.month)[1]
+    ultima_data = primeira_data.replace(day=ultimo_dia)
+
+    data_inicial = primeira_data.strftime("%m-%d-%Y")
+    data_final   = ultima_data.strftime("%m-%d-%Y")
+
+    url = (
+        f"https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/"
+        f"CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?"
+        f"@dataInicial='{data_inicial}'&amp;amp;@dataFinalCotacao='{data_final}'"
+        f"&amp;amp;$top=1000&amp;amp;$format=json"
+        f"&amp;amp;$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao"
+    )
+
+    resposta = requests.get(url).json()
+
+    if "value" not in resposta or not resposta["value"]:
+        print("Nenhuma cotação encontrada para esse período.")
+        return
+
+    df = pd.DataFrame(resposta["value"])
+
+    df["dataHoraCotacao"] = pd.to_datetime(df["dataHoraCotacao"]).dt.date
+
+    df = df.sort_values("dataHoraCotacao")
+
+    todas_as_datas = pd.date_range(
+        start=primeira_data,
+        end=ultima_data
+    ).date
+
+    df_completo = pd.DataFrame({"dataHoraCotacao": todas_as_datas})
+
+    df_completo = df_completo.merge(
+        df[["dataHoraCotacao", "cotacaoVenda"]],
+        on="dataHoraCotacao",
+        how="left"
+    )
+
+    df_completo["cotacaoVenda"] = df_completo["cotacaoVenda"].fillna(method="ffill")
+
+    fig = px.line(
+        df_completo,
+        x="dataHoraCotacao",
+        y="cotacaoVenda",
+        title=f"Cotação do Dólar – {mes_ano[:2]}/{mes_ano[2:]}",
+        labels={
+            "dataHoraCotacao": "Data",
+            "cotacaoVenda": "Cotação de Venda (R$)"
+        },
+        markers=True
+    )
+
+    fig.show()
+
+    return df_completo
+
+grafico_cotacao_dolar("062023")</code></pre>
+
+
+</section>
+
+ ]]></description>
+  <guid>https://your-website-url.example.com/posts/2025-11-22-cot_dolarr.html</guid>
+  <pubDate>Sat, 22 Nov 2025 03:00:00 GMT</pubDate>
+  <media:content url="https://your-website-url.example.com/posts/grafico.png" medium="image" type="image/png" height="69" width="144"/>
+</item>
+<item>
+  <title>Monitoramento de Frota de Ônibus</title>
+  <dc:creator>Larissa Foschi</dc:creator>
+  <link>https://your-website-url.example.com/posts/2025-11-21-onibus.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="introdução" class="level1">
+<h1>Introdução</h1>
+<p>Nesta atividade foi desenvolvida uma rotina em Python para monitorar em tempo real a posição dos ônibus de uma linha específica utilizando a API pública da SPTrans (Olho Vivo).</p>
+<p>O objetivo foi:</p>
+<ul>
+<li>autenticar na API utilizando um token pessoal</li>
+<li>buscar as paradas de uma linha escolhida</li>
+<li>obter a posição atual dos veículos em circulação</li>
+<li>exibir tudo em um mapa interativo, destacando:
+<ul>
+<li>paradas (em azul)</li>
+<li>ônibus em movimento (em vermelho)</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="bibliotecas-utilizadas" class="level1">
+<h1>Bibliotecas utilizadas</h1>
+<ul>
+<li><code>requests</code>: para fazer as chamadas HTTP na API da SPTrans</li>
+<li><code>dotenv</code>: para ler o token armazenado no arquivo <code>.env</code></li>
+<li><code>folium</code>: responsável pela construção do mapa interativo</li>
+<li><code>os</code>: manipulação de variáveis do sistema</li>
+</ul>
+<hr>
+</section>
+<section id="autenticação-na-api" class="level1">
+<h1>Autenticação na API</h1>
+<p>Antes de consultar qualquer informação, o código realiza o login na API usando o token fornecido no <code>.env</code>:</p>
+<pre><code>import os
+import requests
+from dotenv import load_dotenv
+
+
+load_dotenv(".env")
+
+s = requests.Session()
+res = s.post(
+    f"http://api.olhovivo.sptrans.com.br/v2.1/Login/Autenticar?token={os.getenv('SPTRANS_TOKEN')}"
+)
+print(res.text)
+Se a autenticação estiver correta, a resposta será "true".</code></pre>
+<ul>
+<li><em>Consulta da linha</em></li>
+</ul>
+<p>Com a sessão autenticada, é feita a busca de linhas que contenham o termo “Lapa”:</p>
+<pre><code>linhas_lapa = s.get(
+    "http://api.olhovivo.sptrans.com.br/v2.1/Linha/Buscar?termosBusca=Lapa"
+)
+
+linhas_lapa = linhas_lapa.json()
+print(linhas_lapa[:3])</code></pre>
+<p><em>Após isso, escolheu-se uma linha específica pelo código: </em></p>
+<pre><code>res = s.get(
+    "http://api.olhovivo.sptrans.com.br/v2.1/Parada/BuscarParadasPorLinha?codigoLinha=35274"
+)
+
+paradas = res.json()
+print(paradas)</code></pre>
+<ul>
+<li><em>Obtendo posição dos ônibus em tempo real</em></li>
+</ul>
+<p>O próximo passo foi obter os veículos que estão circulando naquele momento:</p>
+<pre><code>pos_res = s.get(
+    f"http://api.olhovivo.sptrans.com.br/v2.1/Posicao/Linha?codigoLinha=35274"
+)
+pos = pos_res.json()
+
+if isinstance(pos, dict) and pos.get("vs"):
+    print(f"Foram encontrados {len(pos['vs'])} ônibus circulando.")
+else:
+    print("Nenhum ônibus em movimento no momento.")</code></pre>
+<ul>
+<li><em>Construção do mapa</em></li>
+</ul>
+<p>A API retorna as coordenadas (latitude e longitude) tanto das paradas quanto dos veículos. Usando o folium, um mapa foi gerado contendo:</p>
+<p>marcadores azuis → paradas</p>
+<p>marcadores vermelhos → ônibus em trânsito</p>
+<pre><code>from folium import Map, Marker, Icon
+from paradas import paradas
+from posicoes import pos
+
+m = Map(location=[paradas[0]["py"], paradas[0]["px"]], zoom_start=13)
+
+for p in paradas:
+    Marker(
+        location=[p["py"], p["px"]],
+        popup=f"Parada: {p['np']}",
+        icon=Icon(color="blue", icon="bus", prefix="fa")
+    ).add_to(m)
+
+if "vs" in pos and pos["vs"]:
+    for v in pos["vs"]:
+        Marker(
+            location=[v["py"], v["px"]],
+            popup=f"Ônibus {v['p']} - sentido {v['a']}",
+            icon=Icon(color="red", icon="info-sign")
+        ).add_to(m)
+
+m.show_in_browser()</code></pre>
+<p><strong>O resultado é um mapa interativo exibido no navegador, permitindo visualizar a estrutura da linha e onde os veículos estão em tempo real.</strong></p>
+<hr>
+</section>
+<section id="código-completo" class="level1">
+<h1>CÓDIGO COMPLETO</h1>
+<ul>
+<li><strong>Mapas:</strong></li>
+</ul>
+<pre><code>from folium import Map, Marker, Icon
+from paradas import paradas
+from posicoes import pos
+
+m = Map(location=[paradas[0]["py"], paradas[0]["px"]], zoom_start=13)
+
+for p in paradas:
+    Marker(
+        location=[p["py"], p["px"]],
+        popup=f"Parada: {p['np']}",
+        icon=Icon(color="blue", icon="bus", prefix="fa")
+    ).add_to(m)
+
+if "vs" in pos and pos["vs"]:
+    for v in pos["vs"]:
+        Marker(
+            location=[v["py"], v["px"]],
+            popup=f"Ônibus {v['p']} - sentido {v['a']}",
+            icon=Icon(color="red", icon="info-sign")
+        ).add_to(m)
+
+m.show_in_browser()</code></pre>
+<ul>
+<li><strong>Paradas:</strong></li>
+</ul>
+<pre><code>import os
+import requests
+from dotenv import load_dotenv
+
+load_dotenv(".env")
+
+s = requests.Session()
+res = s.post(
+f"http://api.olhovivo.sptrans.com.br/v2.1/Login/Autenticar?token={os.getenv('SPTRANS_TOKEN')}"
+)
+
+print(res.text)
+
+linhas_lapa = s.get(
+"http://api.olhovivo.sptrans.com.br/v2.1/Linha/Buscar?termosBusca=Lapa"
+)
+
+linhas_lapa = linhas_lapa.json()
+print(linhas_lapa[:3])
+
+res = s.get(
+"http://api.olhovivo.sptrans.com.br/v2.1/Parada/BuscarParadasPorLinha?codigoLinha=35274"
+)
+
+paradas = res.json()
+print(paradas)</code></pre>
+<ul>
+<li><strong>Posições dos ônibus:</strong></li>
+</ul>
+<pre><code>import os
+import requests
+from dotenv import load_dotenv
+
+load_dotenv(".env")
+
+TOKEN = os.getenv("SPTRANS_TOKEN")
+CODIGO_LINHA = os.getenv("SPTRANS_CODIGO_LINHA", "35274")
+
+if not TOKEN:
+    raise RuntimeError("SPTRANS_TOKEN não definido em .env")
+
+s = requests.Session()
+login_res = s.post(f"http://api.olhovivo.sptrans.com.br/v2.1/Login/Autenticar?token={TOKEN}")
+if not login_res.ok or login_res.text.strip().lower() != "true":
+    raise RuntimeError(f"Falha ao autenticar: {login_res.status_code} {login_res.text}")
+
+pos_res = s.get(f"http://api.olhovivo.sptrans.com.br/v2.1/Posicao/Linha?codigoLinha={CODIGO_LINHA}")
+pos_res.raise_for_status()
+
+pos = pos_res.json()
+
+if isinstance(pos, dict) and pos.get("vs"):
+    print(f"Foram encontrados {len(pos['vs'])} ônibus circulando.")
+else:
+    print("Nenhum ônibus em movimento no momento.")
+print(pos)</code></pre>
+
+
+</section>
+
+ ]]></description>
+  <guid>https://your-website-url.example.com/posts/2025-11-21-onibus.html</guid>
+  <pubDate>Fri, 21 Nov 2025 03:00:00 GMT</pubDate>
+  <media:content url="https://your-website-url.example.com/posts/onibus.png" medium="image" type="image/png" height="68" width="144"/>
+</item>
+<item>
+  <title>Regressão Linear – Estimativa de Salário</title>
+  <dc:creator>Larissa Foschi</dc:creator>
+  <link>https://your-website-url.example.com/posts/2025-11-23-reg_linear.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="introdução" class="level1">
+<h1>Introdução</h1>
+<p>Nesta atividade foi realizada uma análise de regressão linear simples para estudar a relação entre:</p>
+<ul>
+<li><strong>X</strong> → anos de estudo<br>
+</li>
+<li><strong>y</strong> → salário</li>
+</ul>
+<p>Os valores foram carregados a partir de dois arquivos de texto (<code>X.txt</code> e <code>y.txt</code>).<br>
+O objetivo foi:</p>
+<ul>
+<li>montar a função de regressão linear usando <strong>cálculo matricial</strong></li>
+<li>gerar os coeficientes da reta estimada</li>
+<li>representar graficamente os pontos reais e a reta calculada utilizando a biblioteca Plotly</li>
+</ul>
+<hr>
+</section>
+<section id="bibliotecas-utilizadas" class="level1">
+<h1>Bibliotecas utilizadas</h1>
+<ul>
+<li><code>numpy</code>: para operações de vetores e matrizes</li>
+<li><code>plotly.graph_objects</code>: para criar o gráfico interativo da regressão</li>
+</ul>
+<hr>
+<ul>
+<li><strong>Carregando os dados</strong></li>
+</ul>
+<p>Os valores de X e y foram carregados utilizando <code>numpy.loadtxt</code>, que lê os arquivos <code>.txt</code> e os converte para arrays numéricos:</p>
+<pre><code>X = np.loadtxt("X.txt")
+y = np.loadtxt("y.txt")</code></pre>
+<ul>
+<li><strong>Montando a matriz do modelo</strong></li>
+</ul>
+<p>Em regressão linear, o modelo matemático é:</p>
+<p>ŷ = a + bX</p>
+<p>Para calcular a e b por álgebra linear, é necessário montar a matriz X_matrix contendo:</p>
+<p>primeira coluna: valores iguais a 1 (para representar o termo constante a)</p>
+<p>segunda coluna: os valores reais de X</p>
+<pre><code>X_matrix = np.column_stack((np.ones(len(X)), X))</code></pre>
+<ul>
+<li><strong>Cálculo dos coeficientes</strong></li>
+</ul>
+<p>O vetor de coeficientes é dado pela fórmula matricial clássica da regressão:</p>
+<p>β = (XᵀX)⁻¹ Xᵀy</p>
+<p><em>Onde β contém:</em></p>
+<p>β₀ (intercepto)</p>
+<p>β₁ (inclinação)</p>
+<pre><code>beta = np.linalg.inv(X_matrix.T @ X_matrix) @ (X_matrix.T @ y)
+a = beta[0]
+b = beta[1]</code></pre>
+<p>Ao final deste passo, a e b são os parâmetros da reta que melhor se ajusta aos dados.</p>
+<ul>
+<li><strong>Calculando valores estimados</strong></li>
+</ul>
+<p>Depois de estimar os coeficientes, foram gerados valores da reta para fins de visualização:</p>
+<pre><code>x_line = np.linspace(X.min(), X.max(), 200)
+y_line = a + b * x_line</code></pre>
+<p>Isso permite traçar uma linha contínua cobrindo toda a faixa de valores observados.</p>
+<ul>
+<li><strong>Gráfico com Plotly</strong></li>
+</ul>
+<p>O gráfico final contém:</p>
+<pre><code>- Pontos reais observados (dados dos arquivos)
+
+- Reta da regressão ajustada</code></pre>
+<pre><code>fig = go.Figure()
+
+fig.add_trace(go.Scatter(
+    x=X, y=y, mode="markers",
+    name="Dados observados"
+))
+
+fig.add_trace(go.Scatter(
+    x=x_line, y=y_line, mode="lines",
+    name="Regressão linear"
+))
+
+fig.update_layout(
+    title="Regressão Linear com Plotly",
+    xaxis_title="x (anos de estudo)",
+    yaxis_title="y (salário)"
+)
+
+fig.show()</code></pre>
+<hr>
+</section>
+<section id="código-completo" class="level1">
+<h1>CÓDIGO COMPLETO</h1>
+<pre><code>import numpy as np
+import plotly.graph_objects as go
+ 
+X = np.loadtxt("X.txt")
+y = np.loadtxt("y.txt")
+ 
+X_matrix = np.column_stack((np.ones(len(X)), X))
+
+beta = np.linalg.inv(X_matrix.T @ X_matrix) @ (X_matrix.T @ y)
+a = beta[0]   # intercepto
+b = beta[1]   # inclinação
+ 
+print("Coeficientes:")
+print("a =", a)
+print("b =", b)
+ 
+x_line = np.linspace(X.min(), X.max(), 200)
+y_line = a + b * x_line
+ 
+fig = go.Figure()
+ 
+fig.add_trace(go.Scatter(
+    x=X, y=y, mode="markers",
+    name="Dados observados"
+))
+ 
+fig.add_trace(go.Scatter(
+    x=x_line, y=y_line, mode="lines",
+    name="Regressão linear"
+))
+ 
+fig.update_layout(
+    title="Regressão Linear com Plotly",
+    xaxis_title="x (anos de estudo)",
+    yaxis_title="y (salário)"
+)
+ 
+fig.show()</code></pre>
+
+
+</section>
+
+ ]]></description>
+  <guid>https://your-website-url.example.com/posts/2025-11-23-reg_linear.html</guid>
+  <pubDate>Fri, 21 Nov 2025 03:00:00 GMT</pubDate>
+  <media:content url="https://your-website-url.example.com/posts/reg_linear.png" medium="image" type="image/png" height="69" width="144"/>
+</item>
+</channel>
+</rss>

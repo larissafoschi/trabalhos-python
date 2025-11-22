@@ -1,0 +1,197 @@
+---
+title: "Cotação do Dólar por Período"
+format: html
+date: 2025-11-22 
+author: "Larissa Foschi" 
+image: grafico.png
+---
+
+# Introdução
+
+Nesta atividade foi desenvolvida uma rotina em Python que recebe como entrada um mês e um ano no formato **MMYYYY** e consulta a API do Banco Central para obter a cotação diária do dólar frente ao real naquele período.
+
+O objetivo é:
+
+- identificar o primeiro e o último dia do mês automaticamente
+- consultar a API do Banco Central
+- organizar os dados em formato de tabela
+- preencher dias sem cotação (como fins de semana e feriados)
+- exibir um gráfico de linha interativo utilizando a biblioteca Plotly
+
+---
+
+# Bibliotecas utilizadas
+
+```
+import requests
+import pandas as pd
+import plotly.express as px
+import calendar
+from datetime import datetime, timedelta
+requests: realiza a consulta HTTP na API do Banco Central
+```
+
+pandas: organiza os dados em tabela
+
+plotly.express: cria o gráfico interativo
+
+calendar e datetime: manipulam datas
+
+# Lógica da função
+
+- *Conversão da data*
+
+A função recebe uma string no formato MMYYYY e converte para uma data do tipo datetime, representando o primeiro dia do mês:
+
+```
+primeira_data = datetime.strptime(mes_ano, "%m%Y")
+```
+
+- *Descobrindo o último dia do mês*
+
+O Python calcula automaticamente quantos dias existem no mês informado:
+
+```
+ultimo_dia = calendar.monthrange(primeira_data.year, primeira_data.month)[1]
+ultima_data = primeira_data.replace(day=ultimo_dia)
+```
+
+- *Formatação para a API*
+
+A API do Banco Central exige datas no padrão MM-DD-YYYY, portanto elas são formatadas:
+
+```
+data_inicial = primeira_data.strftime("%m-%d-%Y")
+data_final   = ultima_data.strftime("%m-%d-%Y")
+```
+
+- *Construção da URL*
+
+A URL da consulta é montada com os parâmetros necessários:
+
+```
+url = (
+    f"https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/"
+    f"CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?"
+    f"@dataInicial='{data_inicial}'&@dataFinalCotacao='{data_final}'"
+    f"&$top=1000&$format=json"
+    f"&$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao"
+)
+```
+
+- *Consulta e tratamento dos dados*
+
+Após a requisição, os dados são transformados em DataFrame:
+
+```
+df = pd.DataFrame(resposta["value"])
+```
+
+A coluna de data é transformada para remover o horário e facilitar a ordenação:
+
+```
+df["dataHoraCotacao"] = pd.to_datetime(df["dataHoraCotacao"]).dt.date
+df = df.sort_values("dataHoraCotacao")
+```
+
+- *Preenchendo dias sem cotação*
+
+Alguns dias, como finais de semana e feriados, não possuem valores retornados pela API. Para manter a continuidade da linha do gráfico, é utilizado o valor do último dia útil anterior:
+
+```
+df_completo["cotacaoVenda"] = df_completo["cotacaoVenda"].fillna(method="ffill")
+```
+
+- *Geração do gráfico*
+
+Por fim, o gráfico interativo é exibido com Plotly:
+
+```
+fig = px.line(
+    df_completo,
+    x="dataHoraCotacao",
+    y="cotacaoVenda",
+    title=f"Cotação do Dólar – {mes_ano[:2]}/{mes_ano[2:]}",
+    labels={
+        "dataHoraCotacao": "Data",
+        "cotacaoVenda": "Cotação de Venda (R$)"
+    },
+    markers=True
+)
+
+fig.show()
+```
+---
+
+# CÓDIGO COMPLETO
+
+```
+import requests
+import pandas as pd
+import plotly.express as px
+import calendar
+from datetime import datetime, timedelta
+
+def grafico_cotacao_dolar(mes_ano: str):
+
+    primeira_data = datetime.strptime(mes_ano, "%m%Y")
+
+    ultimo_dia = calendar.monthrange(primeira_data.year, primeira_data.month)[1]
+    ultima_data = primeira_data.replace(day=ultimo_dia)
+
+    data_inicial = primeira_data.strftime("%m-%d-%Y")
+    data_final   = ultima_data.strftime("%m-%d-%Y")
+
+    url = (
+        f"https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/"
+        f"CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?"
+        f"@dataInicial='{data_inicial}'&amp;@dataFinalCotacao='{data_final}'"
+        f"&amp;$top=1000&amp;$format=json"
+        f"&amp;$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao"
+    )
+
+    resposta = requests.get(url).json()
+
+    if "value" not in resposta or not resposta["value"]:
+        print("Nenhuma cotação encontrada para esse período.")
+        return
+
+    df = pd.DataFrame(resposta["value"])
+
+    df["dataHoraCotacao"] = pd.to_datetime(df["dataHoraCotacao"]).dt.date
+
+    df = df.sort_values("dataHoraCotacao")
+
+    todas_as_datas = pd.date_range(
+        start=primeira_data,
+        end=ultima_data
+    ).date
+
+    df_completo = pd.DataFrame({"dataHoraCotacao": todas_as_datas})
+
+    df_completo = df_completo.merge(
+        df[["dataHoraCotacao", "cotacaoVenda"]],
+        on="dataHoraCotacao",
+        how="left"
+    )
+
+    df_completo["cotacaoVenda"] = df_completo["cotacaoVenda"].fillna(method="ffill")
+
+    fig = px.line(
+        df_completo,
+        x="dataHoraCotacao",
+        y="cotacaoVenda",
+        title=f"Cotação do Dólar – {mes_ano[:2]}/{mes_ano[2:]}",
+        labels={
+            "dataHoraCotacao": "Data",
+            "cotacaoVenda": "Cotação de Venda (R$)"
+        },
+        markers=True
+    )
+
+    fig.show()
+
+    return df_completo
+
+grafico_cotacao_dolar("062023")
+```

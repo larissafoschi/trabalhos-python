@@ -1,0 +1,161 @@
+---
+title: "Regressão Linear – Estimativa de Salário"
+format: html
+date: 2025-11-21
+author: "Larissa Foschi"
+image: reg_linear.png
+---
+
+# Introdução
+
+Nesta atividade foi realizada uma análise de regressão linear simples para estudar a relação entre:
+
+- **X** → anos de estudo  
+- **y** → salário
+
+Os valores foram carregados a partir de dois arquivos de texto (`X.txt` e `y.txt`).  
+O objetivo foi:
+
+- montar a função de regressão linear usando **cálculo matricial**
+- gerar os coeficientes da reta estimada
+- representar graficamente os pontos reais e a reta calculada utilizando a biblioteca Plotly
+
+---
+
+# Bibliotecas utilizadas
+
+- `numpy`: para operações de vetores e matrizes
+- `plotly.graph_objects`: para criar o gráfico interativo da regressão
+
+---
+
+- **Carregando os dados**
+
+Os valores de X e y foram carregados utilizando `numpy.loadtxt`, que lê os arquivos `.txt` e os converte para arrays numéricos:
+
+```
+X = np.loadtxt("X.txt")
+y = np.loadtxt("y.txt")
+```
+
+- **Montando a matriz do modelo**
+
+Em regressão linear, o modelo matemático é:
+
+ŷ = a + bX
+
+Para calcular a e b por álgebra linear, é necessário montar a matriz X_matrix contendo:
+
+primeira coluna: valores iguais a 1 (para representar o termo constante a)
+
+segunda coluna: os valores reais de X
+
+```
+X_matrix = np.column_stack((np.ones(len(X)), X))
+```
+
+- **Cálculo dos coeficientes**
+
+O vetor de coeficientes é dado pela fórmula matricial clássica da regressão:
+
+β = (XᵀX)⁻¹ Xᵀy
+
+*Onde β contém:*
+
+β₀ (intercepto)
+
+β₁ (inclinação)
+
+```
+beta = np.linalg.inv(X_matrix.T @ X_matrix) @ (X_matrix.T @ y)
+a = beta[0]
+b = beta[1]
+```
+
+Ao final deste passo, a e b são os parâmetros da reta que melhor se ajusta aos dados.
+
+- **Calculando valores estimados**
+
+Depois de estimar os coeficientes, foram gerados valores da reta para fins de visualização:
+
+```
+x_line = np.linspace(X.min(), X.max(), 200)
+y_line = a + b * x_line
+```
+
+Isso permite traçar uma linha contínua cobrindo toda a faixa de valores observados.
+
+
+- **Gráfico com Plotly**
+
+O gráfico final contém:
+
+    - Pontos reais observados (dados dos arquivos)
+
+    - Reta da regressão ajustada
+
+```
+fig = go.Figure()
+
+fig.add_trace(go.Scatter(
+    x=X, y=y, mode="markers",
+    name="Dados observados"
+))
+
+fig.add_trace(go.Scatter(
+    x=x_line, y=y_line, mode="lines",
+    name="Regressão linear"
+))
+
+fig.update_layout(
+    title="Regressão Linear com Plotly",
+    xaxis_title="x (anos de estudo)",
+    yaxis_title="y (salário)"
+)
+
+fig.show()
+```
+---
+
+# CÓDIGO COMPLETO
+
+```
+import numpy as np
+import plotly.graph_objects as go
+ 
+X = np.loadtxt("X.txt")
+y = np.loadtxt("y.txt")
+ 
+X_matrix = np.column_stack((np.ones(len(X)), X))
+
+beta = np.linalg.inv(X_matrix.T @ X_matrix) @ (X_matrix.T @ y)
+a = beta[0]   # intercepto
+b = beta[1]   # inclinação
+ 
+print("Coeficientes:")
+print("a =", a)
+print("b =", b)
+ 
+x_line = np.linspace(X.min(), X.max(), 200)
+y_line = a + b * x_line
+ 
+fig = go.Figure()
+ 
+fig.add_trace(go.Scatter(
+    x=X, y=y, mode="markers",
+    name="Dados observados"
+))
+ 
+fig.add_trace(go.Scatter(
+    x=x_line, y=y_line, mode="lines",
+    name="Regressão linear"
+))
+ 
+fig.update_layout(
+    title="Regressão Linear com Plotly",
+    xaxis_title="x (anos de estudo)",
+    yaxis_title="y (salário)"
+)
+ 
+fig.show()
+```

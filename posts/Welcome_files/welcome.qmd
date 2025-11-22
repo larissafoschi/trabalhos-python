@@ -1,0 +1,20 @@
+---
+title: "Welcome to my first blog!"
+format: html
+date: 2099-01-01
+author: "Larissa Foschi"
+image: welcome.jpg
+---
+
+# Olá! Que bom te ver por aqui! :)
+
+---
+## O que você vai encontrar por aqui
+
+- **Projetos de programação:** códigos, scripts e visualizações.
+- **Análises de dados:** gráficos, mapas e insights interessantes.
+
+
+## Como navegar
+
+Use o menu no topo para acessar diferentes seções, ou explore os posts mais recentes logo abaixo. Sinta-se à vontade para comentar e compartilhar suas ideias!
