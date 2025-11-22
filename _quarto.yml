@@ -1,5 +1,6 @@
 project:
   type: website
+  output-dir: docs 
 
 website:
   description: "A blog built with Quarto"
@@ -18,6 +19,7 @@ format:
       - cosmo
       - brand
     css: styles.css
+
 
 
 

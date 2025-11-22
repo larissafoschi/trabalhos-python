@@ -1,39 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://your-website-url.example.com/posts/2025-11-22-cot_dolarr.html</loc>
-    <lastmod>2025-11-22T18:55:01.358Z</lastmod>
-  </url>
-  <url>
-    <loc>https://your-website-url.example.com/posts/welcome/index.html</loc>
-    <lastmod>2025-11-22T17:36:15.159Z</lastmod>
-  </url>
-  <url>
-    <loc>https://your-website-url.example.com/about.html</loc>
-    <lastmod>2025-11-22T17:36:15.194Z</lastmod>
-  </url>
-  <url>
-    <loc>https://your-website-url.example.com/posts/post-with-code/index.html</loc>
-    <lastmod>2025-11-22T17:36:15.181Z</lastmod>
-  </url>
-  <url>
     <loc>https://your-website-url.example.com/index.html</loc>
-    <lastmod>2025-11-22T17:36:15.150Z</lastmod>
+    <lastmod>2025-11-22T19:12:00.475Z</lastmod>
   </url>
   <url>
-    <loc>https://your-website-url.example.com/posts/2025-11-21-onibus.html</loc>
-    <lastmod>2025-11-22T18:53:12.663Z</lastmod>
-  </url>
-  <url>
-    <loc>https://your-website-url.example.com/posts/2025-11-23-reg_linear.html</loc>
-    <lastmod>2025-11-22T18:34:48.670Z</lastmod>
+    <loc>https://your-website-url.example.com/posts/2025-11-22-cot_dolarr.html</loc>
+    <lastmod>2025-11-22T19:14:44.507Z</lastmod>
   </url>
   <url>
     <loc>https://your-website-url.example.com/posts/welcome.html</loc>
-    <lastmod>2025-11-22T18:52:12.867Z</lastmod>
-  </url>
-  <url>
-    <loc>https://your-website-url.example.com/posts/Welcome_files/welcome.html</loc>
-    <lastmod>2025-11-22T18:54:35.172Z</lastmod>
+    <lastmod>2025-11-22T19:14:27.433Z</lastmod>
   </url>
 </urlset>

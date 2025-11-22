@@ -8,6 +8,8 @@ image: welcome.jpg
 
 # Olá! Que bom te ver por aqui! :)
 
+Este é meu blog Quarto, onde compartilho projetos, análises de dados e estudos sobre programação e tecnologia.
+
 ---
 ## O que você vai encontrar por aqui
 
@@ -18,3 +20,5 @@ image: welcome.jpg
 ## Como navegar
 
 Use o menu no topo para acessar diferentes seções, ou explore os posts mais recentes logo abaixo. Sinta-se à vontade para comentar e compartilhar suas ideias!
+
+**Sinta-se à vontade para explorar os posts no menu ou abaixo!**

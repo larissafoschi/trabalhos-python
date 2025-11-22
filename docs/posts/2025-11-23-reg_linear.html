@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Tristan O’Malley">
-<meta name="dcterms.date" content="2025-11-19">
+<meta name="author" content="Larissa Foschi">
+<meta name="dcterms.date" content="2025-11-21">
 
-<title>Welcome To My Blog – Programação-Python</title>
+<title>Regressão Linear – Estimativa de Salário – Programação-Python</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -25,24 +25,24 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-e31584831b205ffbb2d98406f31c2a5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-e31584831b205ffbb2d98406f31c2a5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,7 +72,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-fixed fullcontent quarto-light">
@@ -82,9 +82,9 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
     </a>
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Programação-Python</span>
     </a>
   </div>
@@ -95,7 +95,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html"> 
+    <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
@@ -119,11 +119,8 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Welcome To My Blog</h1>
-                                <div class="quarto-categories">
-                <div class="quarto-category">news</div>
-              </div>
-                  </div>
+      <h1 class="title">Regressão Linear – Estimativa de Salário</h1>
+                      </div>
   </div>
     
   
@@ -132,14 +129,14 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Author</div>
       <div class="quarto-title-meta-contents">
-               <p>Tristan O’Malley </p>
+               <p>Larissa Foschi </p>
             </div>
     </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">November 19, 2025</p>
+        <p class="date">November 21, 2025</p>
       </div>
     </div>
     
@@ -158,11 +155,135 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>This is the first post in a Quarto blog. Welcome!</p>
-<p><img src="thumbnail.jpg" class="img-fluid"></p>
-<p>Since this post doesn’t specify an explicit <code>image</code>, the first image in the post will be used in the listing page of posts.</p>
+<section id="introdução" class="level1">
+<h1>Introdução</h1>
+<p>Nesta atividade foi realizada uma análise de regressão linear simples para estudar a relação entre:</p>
+<ul>
+<li><strong>X</strong> → anos de estudo<br>
+</li>
+<li><strong>y</strong> → salário</li>
+</ul>
+<p>Os valores foram carregados a partir de dois arquivos de texto (<code>X.txt</code> e <code>y.txt</code>).<br>
+O objetivo foi:</p>
+<ul>
+<li>montar a função de regressão linear usando <strong>cálculo matricial</strong></li>
+<li>gerar os coeficientes da reta estimada</li>
+<li>representar graficamente os pontos reais e a reta calculada utilizando a biblioteca Plotly</li>
+</ul>
+<hr>
+</section>
+<section id="bibliotecas-utilizadas" class="level1">
+<h1>Bibliotecas utilizadas</h1>
+<ul>
+<li><code>numpy</code>: para operações de vetores e matrizes</li>
+<li><code>plotly.graph_objects</code>: para criar o gráfico interativo da regressão</li>
+</ul>
+<hr>
+<ul>
+<li><strong>Carregando os dados</strong></li>
+</ul>
+<p>Os valores de X e y foram carregados utilizando <code>numpy.loadtxt</code>, que lê os arquivos <code>.txt</code> e os converte para arrays numéricos:</p>
+<pre><code>X = np.loadtxt("X.txt")
+y = np.loadtxt("y.txt")</code></pre>
+<ul>
+<li><strong>Montando a matriz do modelo</strong></li>
+</ul>
+<p>Em regressão linear, o modelo matemático é:</p>
+<p>ŷ = a + bX</p>
+<p>Para calcular a e b por álgebra linear, é necessário montar a matriz X_matrix contendo:</p>
+<p>primeira coluna: valores iguais a 1 (para representar o termo constante a)</p>
+<p>segunda coluna: os valores reais de X</p>
+<pre><code>X_matrix = np.column_stack((np.ones(len(X)), X))</code></pre>
+<ul>
+<li><strong>Cálculo dos coeficientes</strong></li>
+</ul>
+<p>O vetor de coeficientes é dado pela fórmula matricial clássica da regressão:</p>
+<p>β = (XᵀX)⁻¹ Xᵀy</p>
+<p><em>Onde β contém:</em></p>
+<p>β₀ (intercepto)</p>
+<p>β₁ (inclinação)</p>
+<pre><code>beta = np.linalg.inv(X_matrix.T @ X_matrix) @ (X_matrix.T @ y)
+a = beta[0]
+b = beta[1]</code></pre>
+<p>Ao final deste passo, a e b são os parâmetros da reta que melhor se ajusta aos dados.</p>
+<ul>
+<li><strong>Calculando valores estimados</strong></li>
+</ul>
+<p>Depois de estimar os coeficientes, foram gerados valores da reta para fins de visualização:</p>
+<pre><code>x_line = np.linspace(X.min(), X.max(), 200)
+y_line = a + b * x_line</code></pre>
+<p>Isso permite traçar uma linha contínua cobrindo toda a faixa de valores observados.</p>
+<ul>
+<li><strong>Gráfico com Plotly</strong></li>
+</ul>
+<p>O gráfico final contém:</p>
+<pre><code>- Pontos reais observados (dados dos arquivos)
+
+- Reta da regressão ajustada</code></pre>
+<pre><code>fig = go.Figure()
+
+fig.add_trace(go.Scatter(
+    x=X, y=y, mode="markers",
+    name="Dados observados"
+))
+
+fig.add_trace(go.Scatter(
+    x=x_line, y=y_line, mode="lines",
+    name="Regressão linear"
+))
+
+fig.update_layout(
+    title="Regressão Linear com Plotly",
+    xaxis_title="x (anos de estudo)",
+    yaxis_title="y (salário)"
+)
+
+fig.show()</code></pre>
+<hr>
+</section>
+<section id="código-completo" class="level1">
+<h1>CÓDIGO COMPLETO</h1>
+<pre><code>import numpy as np
+import plotly.graph_objects as go
+ 
+X = np.loadtxt("X.txt")
+y = np.loadtxt("y.txt")
+ 
+X_matrix = np.column_stack((np.ones(len(X)), X))
+
+beta = np.linalg.inv(X_matrix.T @ X_matrix) @ (X_matrix.T @ y)
+a = beta[0]   # intercepto
+b = beta[1]   # inclinação
+ 
+print("Coeficientes:")
+print("a =", a)
+print("b =", b)
+ 
+x_line = np.linspace(X.min(), X.max(), 200)
+y_line = a + b * x_line
+ 
+fig = go.Figure()
+ 
+fig.add_trace(go.Scatter(
+    x=X, y=y, mode="markers",
+    name="Dados observados"
+))
+ 
+fig.add_trace(go.Scatter(
+    x=x_line, y=y_line, mode="lines",
+    name="Regressão linear"
+))
+ 
+fig.update_layout(
+    title="Regressão Linear com Plotly",
+    xaxis_title="x (anos de estudo)",
+    yaxis_title="y (salário)"
+)
+ 
+fig.show()</code></pre>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
